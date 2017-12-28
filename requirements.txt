@@ -1,0 +1,9 @@
+h5py==2.7.0
+matplotlib==2.1.0rc1
+numpy==1.13.1
+opencv-python==3.3.0.10
+pytest==3.1.2
+pytest-pep8==1.0.6
+scipy==0.19.1
+http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp35-cp35m-linux_x86_64.whl
+torchvision
