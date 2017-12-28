@@ -25,6 +25,3 @@ else
     return
 fi
 pip install -r requirements.txt
-
-# make our importable
-pip install -e .
