@@ -2,7 +2,7 @@
 
 from distutils.core import setup
 
-setup(name='deep-ctrl',
+setup(name='deep_ctrl',
       version='',
       description='',
       author='Dmitry Trifonov & Natalia Trifonova',
