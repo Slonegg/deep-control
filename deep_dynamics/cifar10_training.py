@@ -1,22 +1,17 @@
-from deep_dynamics.networks.conv2 import Conv2Net
-from deep_dynamics.experiment import Experiment
+from deep_dynamics.experiment import Experiment, create_model, create_optimizer
 from torch.autograd import Variable
 import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 import torchvision.transforms as transforms
-from deep_dynamics.optimizers import PD
 
 
 class Cifar10Training(Experiment):
     def __init__(self, model, optimizer, num_workers=4):
-        if model == 'conv2':
-            self.net = Conv2Net()
-        else:
-            raise ValueError("Unknown model:", model)
+        # setup model
+        self.net = create_model(model)
 
-        # load dataset
+        # setup dataset
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
@@ -25,20 +20,12 @@ class Cifar10Training(Experiment):
         self.training_loader = DataLoader(self.training_set, batch_size=32, shuffle=True, num_workers=num_workers)
         self.test_set = CIFAR10(root='./data', train=False, download=True, transform=self.transform)
         self.test_loader = DataLoader(self.test_set, batch_size=32, shuffle=False, num_workers=num_workers)
-
-        self.classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
         self.training_iterator = iter(self.training_loader)
         self._steps_per_epoch = len(self.training_iterator)
 
         # setup optimizer
         self.criterion = nn.CrossEntropyLoss()
-        if 'SGD' in optimizer:
-            self.optimizer = optim.SGD(self.net.parameters(), **optimizer['SGD'])
-        elif 'PD' in optimizer:
-            self.optimizer = PD(self.net.parameters(), **optimizer['PD'], steps_per_epoch=self.steps_per_epoch)
-        else:
-            raise RuntimeError("Unknown optimizer:", optimizer)
+        self.optimizer = create_optimizer(optimizer, self.net.parameters(), self.steps_per_epoch)
 
     @property
     def steps_per_epoch(self):

@@ -1,5 +1,9 @@
+.cache
 .idea
 env
+
+# Datasets
+cifar-10-batches*
 
 # Prerequisites
 *.d
@@ -43,3 +47,7 @@ env
 
 # Misc
 *.dump
+*.meta
+
+# Archives
+*.tar.gz

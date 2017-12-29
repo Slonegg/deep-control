@@ -1,6 +1,10 @@
 import numpy as np
 import sys
+
+from deep_dynamics.networks.conv2 import Conv2Net
+from deep_dynamics.optimizers import PD
 from deep_dynamics.utils.running_average import RunningAverage
+import torch.optim as optim
 
 
 class Experiment(object):
@@ -32,3 +36,22 @@ def _log_progress(epoch, num_epochs, progress, loss):
     end = '\n' if progress == 1.0 else '\r'
     progress_bar = '=' * int(np.round(60*progress))
     sys.stdout.write('Epoch [{}/{}][{:60}] loss={:<10.2f}{}'.format(epoch, num_epochs, progress_bar, loss, end))
+
+
+def create_model(model):
+    if model == 'conv2':
+        return Conv2Net()
+    else:
+        raise ValueError("Unknown model:", model)
+
+
+def create_optimizer(optimizer, parameters, steps_per_epoch):
+    if 'Adam' in optimizer:
+        return optim.Adam(parameters, **optimizer['Adam'])
+    elif 'SGD' in optimizer:
+        return optim.SGD(parameters, **optimizer['SGD'])
+    elif 'PD' in optimizer:
+        return PD(parameters, **optimizer['PD'], steps_per_epoch=steps_per_epoch)
+    else:
+        raise RuntimeError("Unknown optimizer:", optimizer)
+
