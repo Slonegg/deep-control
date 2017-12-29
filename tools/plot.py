@@ -42,27 +42,27 @@ class Plotter(object):
         self.ax.set_ylim(0, self.ylim)
 
 
-def integrate(plotter, system, label, step=1.0, num_steps=1000, draw_every=10, color='red'):
+def integrate(plotter, system, label, num_epochs=3, num_average=1, draw_every=10, color='red'):
     trajectory, = plt.plot([], [], 'r-', color=color, label=label)
     plotter.add_artist(trajectory)
 
-    t = []
-    t_i = 0.0
-    dt = step / system.steps_per_epoch()
-    x = []
-    for i in range(num_steps):
-        # integrate
-        t_i += dt
-        x_i = system.step(dt)
+    class PlotterCallback(object):
+        def __init__(self, plotter):
+            self.plotter = plotter
+            self.time = []
+            self.loss = []
+            self.step = 0.0
 
-        # draw trajectory
-        if i % draw_every == 0:
-            t.append(t_i)
-            x.append(x_i)
+        def __call__(self, loss):
+            if self.step % draw_every == 0:
+                self.time.append(self.step / system.steps_per_epoch)
+                self.loss.append(loss)
+                trajectory.set_data(self.time, self.loss)
+                self.plotter.set_limits(self.time[-1], np.amax(self.loss))
+                self.plotter.draw()
+            self.step += 1
 
-            trajectory.set_data(t, x)
-            plotter.set_limits(t_i, np.amax(x))
-            plotter.draw()
+    system.run(num_epochs=num_epochs, num_average=num_average, callback=PlotterCallback(plotter))
 
 
 if __name__ == '__main__':
@@ -71,10 +71,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("Plot various dynamical system behaviours")
     parser.add_argument("config", default="./plots/simple_attractor_vs_harmonic_oscillator.json",
                         help="path to config file with plot definition")
-    parser.add_argument("--step", default=1.0,
-                        help="integration step")
-    parser.add_argument("--num-steps", default=3001, type=int,
-                        help="number of steps (batches)")
+    parser.add_argument("--num-epochs", default=5, type=int,
+                        help="number of epochs to run experiment")
     args = parser.parse_args()
 
     # create plotter
@@ -88,10 +86,10 @@ if __name__ == '__main__':
         for s in systems:
             if s.__name__ in plot_entry.keys():
                 system = s(**plot_entry[s.__name__])
-                integrate(plotter,
-                          system,
+                integrate(plotter, system,
                           label=plot_entry['name'],
-                          num_steps=args.num_steps,
+                          num_epochs=args.num_epochs,
+                          num_average=plot_entry.get('average', 1),
                           color=plot_entry['color'])
                 del system
                 break

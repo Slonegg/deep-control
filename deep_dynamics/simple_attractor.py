@@ -1,7 +1,7 @@
-from .dynamics import Dynamics
+from .experiment import Experiment
 
 
-class SimpleAttractor(Dynamics):
+class SimpleAttractor(Experiment):
     def __init__(self, start, target, kp, steps_per_epoch):
         self.x = start
         self.target = target
@@ -11,9 +11,10 @@ class SimpleAttractor(Dynamics):
     def dx_dt(self, x):
         return self.kp*(self.target - x)
 
-    def step(self, dt):
+    def update(self, dt):
         self.x += self.dx_dt(self.x) * dt
         return abs(self.x)
 
+    @property
     def steps_per_epoch(self):
         return self._steps_per_epoch

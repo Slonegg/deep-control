@@ -2,11 +2,12 @@
   {
     "name": "PD",
     "color": "red",
+    "average": 30,
     "Cifar10Training": {
       "model": "conv2",
       "optimizer": {
         "PD": {
-          "k_p": 0.2
+          "k_p": 4.0
         }
       }
     }
@@ -14,6 +15,7 @@
   {
     "name": "SGD",
     "color": "blue",
+    "average": 30,
     "Cifar10Training": {
       "model": "conv2",
       "optimizer": {
@@ -30,7 +32,7 @@
     "SimpleAttractor": {
       "start": 2.35,
       "target": 0,
-      "kp": 0.2,
+      "kp": 4.0,
       "steps_per_epoch": 313
     }
   }

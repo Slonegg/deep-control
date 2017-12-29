@@ -5,7 +5,7 @@
     "SimpleAttractor": {
       "start": 3,
       "target": 0,
-      "kp": 0.2,
+      "kp": 4.0,
       "steps_per_epoch": 100
     }
   },
@@ -15,8 +15,8 @@
     "HarmonicOscillator": {
       "start": 3,
       "target": 0,
-      "kp": 0.2,
-      "kd": 0.88,
+      "kp": 4.0,
+      "kd": 4.0,
       "steps_per_epoch": 100
     }
   }
