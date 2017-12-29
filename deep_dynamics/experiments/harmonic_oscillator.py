@@ -1,4 +1,4 @@
-from .experiment import Experiment
+from deep_dynamics.experiment import Experiment
 import numpy as np
 
 

@@ -3,7 +3,7 @@ import json
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
-from deep_dynamics import Cifar10Training, SimpleAttractor, HarmonicOscillator
+from deep_dynamics.experiments import Cifar10Training, SimpleAttractor, HarmonicOscillator
 
 
 class Plotter(object):

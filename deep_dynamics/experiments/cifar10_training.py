@@ -1,6 +1,6 @@
 from deep_dynamics.experiment import Experiment, create_model, create_optimizer
 from torch.autograd import Variable
-import torch.nn as nn
+from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 import torchvision.transforms as transforms
@@ -24,7 +24,7 @@ class Cifar10Training(Experiment):
         self._steps_per_epoch = len(self.training_iterator)
 
         # setup optimizer
-        self.criterion = nn.CrossEntropyLoss()
+        self.criterion = CrossEntropyLoss()
         self.optimizer = create_optimizer(optimizer, self.net.parameters(), self.steps_per_epoch)
 
     @property

@@ -1,10 +1,9 @@
 import numpy as np
 import sys
-
-from deep_dynamics.networks.conv2 import Conv2Net
-from deep_dynamics.optimizers import PD
-from deep_dynamics.utils.running_average import RunningAverage
 import torch.optim as optim
+from .networks import Conv2Net
+from .optimizers import PD
+from .utils import RunningAverage
 
 
 class Experiment(object):
