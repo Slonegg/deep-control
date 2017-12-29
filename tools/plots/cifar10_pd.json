@@ -1,0 +1,14 @@
+[
+  {
+    "name": "PD",
+    "color": "red",
+    "Cifar10Training": {
+      "model": "conv2",
+      "optimizer": {
+        "PD": {
+          "k_p": 0.1
+        }
+      }
+    }
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "PD",
+    "color": "red",
+    "Cifar10Training": {
+      "model": "conv2",
+      "optimizer": {
+        "PD": {
+          "k_p": 0.2
+        }
+      }
+    }
+  },
+  {
+    "name": "SGD",
+    "color": "blue",
+    "Cifar10Training": {
+      "model": "conv2",
+      "optimizer": {
+        "SGD": {
+          "lr": 0.001,
+          "momentum": 0.9
+        }
+      }
+    }
+  },
+  {
+    "name": "simple attractor",
+    "color": "black",
+    "SimpleAttractor": {
+      "start": 2.35,
+      "target": 0,
+      "kp": 0.2,
+      "steps_per_epoch": 313
+    }
+  }
+]

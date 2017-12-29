@@ -1,0 +1,23 @@
+[
+  {
+    "name": "simple attractor",
+    "color": "red",
+    "SimpleAttractor": {
+      "start": 3,
+      "target": 0,
+      "kp": 0.2,
+      "steps_per_epoch": 100
+    }
+  },
+  {
+    "name": "harmonic oscillator",
+    "color": "blue",
+    "HarmonicOscillator": {
+      "start": 3,
+      "target": 0,
+      "kp": 0.2,
+      "kd": 0.88,
+      "steps_per_epoch": 100
+    }
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "SGD",
+    "color": "red",
+    "Cifar10Training": {
+      "model": "conv2",
+      "optimizer": {
+        "SGD": {
+          "lr": 0.001,
+          "momentum": 0.9
+        }
+      }
+    }
+  }
+]
