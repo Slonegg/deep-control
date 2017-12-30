@@ -52,5 +52,4 @@ class Cifar10Training(Experiment):
 
 if __name__ == '__main__':
     trainer = Cifar10Training(model='conv2', optimizer='SGD')
-    for i in range(1000):
-        trainer.step(1.0)
+    trainer.run(2)

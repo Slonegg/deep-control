@@ -2,26 +2,28 @@
   {
     "name": "PD",
     "color": "red",
-    "average": 30,
-    "Cifar10Training": {
-      "model": "conv2",
+    "average": 1,
+    "MoonsTraining": {
+      "model": "perceptron30",
       "optimizer": {
         "PD": {
-          "k_p": 1.0
+          "k_p": 1.0,
+          "target": 0.34
         }
-      }
+      },
+      "steps_per_epoch": 100
     }
   },
   {
     "name": "SGD",
     "color": "blue",
-    "average": 30,
-    "Cifar10Training": {
-      "model": "conv2",
+    "average": 1,
+    "MoonsTraining": {
+      "model": "perceptron30",
       "optimizer": {
         "SGD": {
-          "lr": 0.001,
-          "momentum": 0.9
+          "lr": 0.1,
+          "momentum": 0.5
         }
       }
     }
@@ -29,12 +31,12 @@
   {
     "name": "Adam",
     "color": "green",
-    "average": 30,
-    "Cifar10Training": {
-      "model": "conv2",
+    "average": 1,
+    "MoonsTraining": {
+      "model": "perceptron30",
       "optimizer": {
         "Adam": {
-          "lr": 0.001,
+          "lr": 0.01,
           "betas": [0.9, 0.999]
         }
       }
@@ -44,10 +46,10 @@
     "name": "simple attractor",
     "color": "black",
     "SimpleAttractor": {
-      "start": 2.35,
-      "target": 0,
+      "start": 0.68,
+      "target": 0.34,
       "kp": 1.0,
-      "steps_per_epoch": 313
+      "steps_per_epoch": 100
     }
   }
 ]

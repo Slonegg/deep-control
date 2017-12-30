@@ -3,16 +3,14 @@ import json
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
-from deep_dynamics.experiments import Cifar10Training, SimpleAttractor, HarmonicOscillator
+from deep_dynamics.experiments import Cifar10Training, MoonsTraining, HarmonicOscillator, SimpleAttractor
 
 
 class Plotter(object):
     def __init__(self):
         self.fig, self.ax = plt.subplots()
         self.artists = []
-        plt.show(False)
-        self.fig.canvas.draw()
-        self.background = self.fig.canvas.copy_from_bbox(self.ax.bbox)
+        self.background = None
         self.xlim = 0
         self.ylim = 0
 
@@ -20,6 +18,11 @@ class Plotter(object):
         self.artists.append(plot)
 
     def draw(self):
+        if self.background is None:
+            plt.show(False)
+            self.fig.canvas.draw()
+            self.background = self.fig.canvas.copy_from_bbox(self.ax.bbox)
+
         # clear background
         self.fig.canvas.restore_region(self.background)
 
@@ -38,11 +41,13 @@ class Plotter(object):
     def set_limits(self, xlim, ylim):
         self.xlim = max(self.xlim, xlim)
         self.ylim = max(self.ylim, ylim)
-        self.ax.set_xlim(0, self.xlim)
-        self.ax.set_ylim(0, self.ylim)
+        if self.xlim > 0:
+            self.ax.set_xlim(0, self.xlim)
+        if self.ylim > 0:
+            self.ax.set_ylim(0, self.ylim)
 
 
-def integrate(plotter, system, label, num_epochs=3, num_average=1, draw_every=10, color='red'):
+def integrate(plotter, system, label, num_epochs=3, num_average=1, draw_every=10, color='red', no_gui=False):
     trajectory, = plt.plot([], [], 'r-', color=color, label=label)
     plotter.add_artist(trajectory)
 
@@ -58,8 +63,9 @@ def integrate(plotter, system, label, num_epochs=3, num_average=1, draw_every=10
                 self.time.append(self.step / system.steps_per_epoch)
                 self.loss.append(loss)
                 trajectory.set_data(self.time, self.loss)
-                self.plotter.set_limits(self.time[-1], np.amax(self.loss))
-                self.plotter.draw()
+                if not no_gui:
+                    self.plotter.set_limits(self.time[-1], np.amax(self.loss))
+                    self.plotter.draw()
             self.step += 1
 
     system.run(num_epochs=num_epochs, num_average=num_average, callback=PlotterCallback(plotter))
@@ -73,6 +79,8 @@ if __name__ == '__main__':
                         help="path to config file with plot definition")
     parser.add_argument("--num-epochs", default=5, type=int,
                         help="number of epochs to run experiment")
+    parser.add_argument("--no-gui", action='store_true', default=False,
+                        help="turn of real-time plotting")
     args = parser.parse_args()
 
     # create plotter
@@ -81,7 +89,7 @@ if __name__ == '__main__':
 
     # draw trajectories
     cfg = json.load(open(args.config))
-    systems = [Cifar10Training, SimpleAttractor, HarmonicOscillator]
+    systems = [Cifar10Training, MoonsTraining, HarmonicOscillator, SimpleAttractor]
     for plot_entry in cfg:
         for s in systems:
             if s.__name__ in plot_entry.keys():
@@ -90,7 +98,8 @@ if __name__ == '__main__':
                           label=plot_entry['name'],
                           num_epochs=args.num_epochs,
                           num_average=plot_entry.get('average', 1),
-                          color=plot_entry['color'])
+                          color=plot_entry['color'],
+                          no_gui=args.no_gui)
                 del system
                 break
         else:
