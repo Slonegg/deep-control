@@ -7,7 +7,7 @@ from torch.optim import LBFGS
 
 
 class MeanEstimator(object):
-    def __init__(self, error_margin=0.01, min_num_samples=3):
+    def __init__(self, error_margin=0.01, min_num_samples=2):
         self._error_margin_squared = error_margin*error_margin
         self._sum_x = None
         self._sum_x_squared = None
@@ -35,21 +35,28 @@ class MeanEstimator(object):
         if self._sum_x is None:
             self._sum_x = x.clone()
             self._sum_x_squared = x*x
+            self._num_samples = torch.ones_like(self._sum_x)
         else:
             self._sum_x += x
             self._sum_x_squared += x*x
-        self._num_samples += 1
+            self._num_samples += 1
 
-        if self._num_samples < self._min_num_samples:
-            return False
-
-        num_samples_required = 4 * self.average_variance / self._error_margin_squared
-        return self._num_samples > num_samples_required
+        return torch.min(self._num_samples) >= self._min_num_samples
 
     def reset(self):
         self._sum_x.fill_(0)
         self._sum_x_squared.fill_(0)
         self._num_samples = 0
+
+    def step(self, update_func):
+        num_samples_required = 4 * self.variance / self._error_margin_squared
+        mask = where(self._num_samples >= num_samples_required, 1, 0)
+        size = self._sum_x.size()[0]
+        if torch.sum(mask) > size * 0.2:
+            update_func(-where(mask, self.mean, 0.0))
+        self._sum_x = where(mask, 0.0, self._sum_x)
+        self._sum_x_squared = where(mask, 0.0, self._sum_x_squared)
+        self._num_samples = where(mask, 0.0, self._num_samples)
 
 
 class PD(Optimizer):
@@ -124,8 +131,7 @@ class PD(Optimizer):
         #     self._avg_loss -= torch.from_numpy(l)
         ok = self._grad_estimator.add_sample(grad)
         if ok:
-            self._add_grad(0.15, -self._grad_estimator.mean)
-            self._grad_estimator.reset()
+            self._grad_estimator.step(lambda x: self._add_grad(0.5, x))
 
         # if self._avg_grad is None:
         #     self._sum_grad = grad
