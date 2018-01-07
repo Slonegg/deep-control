@@ -1,4 +1,5 @@
 from deep_dynamics.experiment import Experiment, create_model, create_optimizer
+from torch import FloatTensor
 from torch.autograd import Variable
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
@@ -47,7 +48,11 @@ class Cifar10Training(Experiment):
             return loss
 
         loss = self.optimizer.step(closure)
-        return loss.data[0]
+        if isinstance(loss, Variable):
+            loss = loss.data[0]
+        elif isinstance(loss, FloatTensor):
+            loss = loss[0]
+        return loss
 
 
 if __name__ == '__main__':

@@ -7,21 +7,8 @@
       "model": "conv2",
       "optimizer": {
         "PD": {
-          "k_p": 1.0
-        }
-      }
-    }
-  },
-  {
-    "name": "SGD",
-    "color": "blue",
-    "average": 30,
-    "Cifar10Training": {
-      "model": "conv2",
-      "optimizer": {
-        "SGD": {
-          "lr": 0.001,
-          "momentum": 0.9
+          "k_p": 0.3,
+          "target": 0.0
         }
       }
     }
@@ -45,9 +32,9 @@
     "color": "black",
     "SimpleAttractor": {
       "start": 2.35,
-      "target": 0,
-      "kp": 1.0,
-      "steps_per_epoch": 313
+      "target": 0.1,
+      "kp": 0.3,
+      "steps_per_epoch": 100
     }
   }
 ]
